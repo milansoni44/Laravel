@@ -1226,4 +1226,9 @@
 </div><!-- /.main-content -->
 
 @endsection
+@section('jquery-script')
+    <script>
+        $(".dashboard_li").addClass("active");
+    </script>
+@endsection
 

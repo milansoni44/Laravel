@@ -36,6 +36,8 @@
                 </div><!-- /.page-header -->
 
                 <div class="row">
+                    @include('layouts.errors')
+                    @include('layouts.success')
                     <table class="table table-bordered data-table">
                         <thead>
                         <tr>
@@ -57,7 +59,9 @@
 @section('jquery-script')
 <script type="text/javascript">
     $(function () {
-
+        $(".user_list_li").addClass("active")
+            .parent()
+            .parent().addClass("active open");
         var table = $('.data-table').DataTable({
             processing: true,
             serverSide: true,

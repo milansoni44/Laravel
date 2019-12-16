@@ -34,8 +34,8 @@
     </div><!-- /.sidebar-shortcuts -->
 
     <ul class="nav nav-list">
-        <li class="active">
-            <a href="index.html">
+        <li class="dashboard_li">
+            <a href="{{route('home')}}">
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text"> Dashboard </span>
             </a>
@@ -54,7 +54,7 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                <li class="">
+                <li class="add_user_li">
                     <a href="{{route('users.create')}}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Add User
@@ -63,7 +63,7 @@
                     <b class="arrow"></b>
                 </li>
 
-                <li class="">
+                <li class="user_list_li">
                     <a href="{{route('users.index')}}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Users List

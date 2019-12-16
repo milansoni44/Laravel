@@ -45,13 +45,14 @@
                                         <div class="step-content pos-rel">
                                             <div class="step-pane active" data-step="1">
 
-                                                <form class="form-horizontal" role="form" action="{{ route('users.store') }}" method="post" enctype="multipart/form-data">
+                                                <form class="form-horizontal" role="form" action="{{ route('users.update',$user->id) }}" method="POST" enctype="multipart/form-data">
                                                     {{csrf_field()}}
+                                                    @method('PUT')
                                                     <div class="form-group">
                                                         <label class="col-sm-2 control-label" for="name"> Name </label>
 
                                                         <div class="col-sm-4 @if($errors->has('name')) has-error @endif">
-                                                            <input type="text" id="name" class="form-control" name="name" value="{{ old('name') }}" autofocus>
+                                                            <input type="text" id="name" class="form-control" name="name" value="{{ old('name') ? old('name') : $user->name }}" autofocus>
                                                             @error('name')
                                                             <div class="help-block col-xs-12 col-sm-reset inline"> {{ $message }} </div>
                                                             @enderror
@@ -60,7 +61,7 @@
                                                         <label class="col-sm-2 control-label" for="email"> Email </label>
 
                                                         <div class="col-sm-4 @if($errors->has('email')) has-error @endif">
-                                                            <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}">
+                                                            <input type="email" name="email" id="email" class="form-control" value="{{ old('email') ? old('email') : $user->email }}">
                                                             @error('email')
                                                             <div class="col-xs-12 col-sm-reset inline text-danger"> {{ $message }} </div>
                                                             @enderror
@@ -87,6 +88,7 @@
                                                         <label class="col-sm-2 control-label" for="profile"> Profile</label>
                                                         <div class="col-sm-4 @if($errors->has('profile')) has-error @endif">
                                                             <input type="file" id="profile" name="profile" class="form-control">
+                                                            <img src="{{asset('uploads/'.$user->profile)}}" width="100px"/>
                                                             @error('profile')
                                                             <div class="help-block col-xs-12 col-sm-reset inline text-danger"> {{ $message }} </div>
                                                             @enderror
