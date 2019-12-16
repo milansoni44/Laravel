@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\User;
+use Illuminate\Support\Facades\Hash;
+use DataTables;
 
 class UserController extends Controller
 {
@@ -11,10 +15,27 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        echo 'List';
+        if ($request->ajax()) {
+            $data = User::latest()->get();
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
+                    $deleteUrl = url('users/'.$row->id);
+                    $btn = '
+                                <a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>
+                                <a href="'.$deleteUrl.'" class="delete btn btn-danger btn-sm">Delete</a>
+                            ';
+
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
+        return view('users.user_list');
     }
 
     /**
@@ -41,6 +62,12 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+        return User::create([
+            'name' => $request->post('name'),
+            'email' => $request->post('email'),
+            'password' => Hash::make($request->post('password')),
+            'created_by'=>Auth::id()
         ]);
     }
 
@@ -86,6 +113,19 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $findProduct = User::find($id);
+        if($findProduct->delete()){
+
+            //redirect
+            return response()->json([
+                'status' => true,
+                'message' => 'Record deleted successfully!',
+            ]);
+
+        }
+        response()->json([
+            'status' => false,
+            'message' => 'Record not deleted successfully!',
+        ]);
     }
 }
