@@ -64,7 +64,7 @@
                 </li>
 
                 <li class="">
-                    <a href="jqgrid.html">
+                    <a href="{{route('users.index')}}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Users List
                     </a>
