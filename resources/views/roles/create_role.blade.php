@@ -11,7 +11,7 @@
                         <a href="#">Home</a>
                     </li>
                     <li class="">
-                        <a href="{{url('users')}}">Users</a>
+                        <a href="{{url('roles')}}">Roles</a>
                     </li>
                     <li class="active">Create</li>
                 </ul><!-- /.breadcrumb -->
@@ -35,7 +35,7 @@
 
                         <div class="widget-box" style="margin-top: 20px;">
                             <div class="widget-header widget-header-blue widget-header-flat">
-                                <h4 class="widget-title lighter">Create User</h4>
+                                <h4 class="widget-title lighter">Create Role</h4>
                             </div>
 
                             <div class="widget-body">
@@ -45,10 +45,10 @@
                                         <div class="step-content pos-rel">
                                             <div class="step-pane active" data-step="1">
 
-                                                <form class="form-horizontal" role="form" action="{{ route('users.store') }}" method="post" enctype="multipart/form-data">
+                                                <form class="form-horizontal" role="form" action="{{ route('roles.store') }}" method="post" enctype="multipart/form-data">
                                                     {{csrf_field()}}
                                                     <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="name"> Name </label>
+                                                        <label class="col-sm-2 control-label col-sm-offset-2" for="name"> Name </label>
 
                                                         <div class="col-sm-4 @if($errors->has('name')) has-error @endif">
                                                             <input type="text" id="name" class="form-control" name="name" value="{{ old('name') }}" autofocus>
@@ -56,57 +56,18 @@
                                                             <div class="help-block col-xs-12 col-sm-reset inline"> {{ $message }} </div>
                                                             @enderror
                                                         </div>
-
-                                                        <label class="col-sm-2 control-label" for="email"> Email </label>
-
-                                                        <div class="col-sm-4 @if($errors->has('email')) has-error @endif">
-                                                            <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}">
-                                                            @error('email')
-                                                            <div class="col-xs-12 col-sm-reset inline text-danger"> {{ $message }} </div>
-                                                            @enderror
-                                                        </div>
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="password"> Password</label>
+                                                        <label class="col-sm-2 control-label col-sm-offset-2" for="description"> Description</label>
 
-                                                        <div class="col-sm-4 @if($errors->has('password')) has-error @endif">
-                                                            <input type="password" id="password" name="password" class="form-control" value="{{ old('password') }}">
-                                                            @error('password')
-                                                            <div class="help-block col-xs-12 col-sm-reset inline text-danger"> {{ $message }} </div>
-                                                            @enderror
-                                                        </div>
-                                                        <label class="col-sm-2 control-label" for="conf_password"> Confirm Password</label>
-
-                                                        <div class="col-sm-4">
-                                                            <input type="password" name="password_confirmation" id="conf_password" class="form-control">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="role_id"> Role</label>
-                                                        <div class="col-sm-4 @if($errors->has('role_id')) has-error @endif">
-                                                            <select class="form-control" name="role_id">
-                                                                <option value="">Select Role</option>
-                                                                @foreach($roles as $role)
-                                                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                            @error('role_id')
-                                                            <div class="help-block col-xs-12 col-sm-reset inline text-danger"> {{ $message }} </div>
-                                                            @enderror
-                                                        </div>
-
-                                                        <label class="col-sm-2 control-label" for="profile"> Profile</label>
-                                                        <div class="col-sm-4 @if($errors->has('profile')) has-error @endif">
-                                                            <input type="file" id="profile" name="profile" class="form-control">
-                                                            @error('profile')
+                                                        <div class="col-sm-4 @if($errors->has('description')) has-error @endif">
+                                                            <textarea class="form-control" id="description" name="description"></textarea>
+                                                            @error('description')
                                                             <div class="help-block col-xs-12 col-sm-reset inline text-danger"> {{ $message }} </div>
                                                             @enderror
                                                         </div>
                                                     </div>
-
-
 
                                                     <div class="form-group">
                                                         <div class="col-xs-12 col-sm-12 center">
@@ -139,9 +100,9 @@
 
 @endsection
 @section('jquery-script')
-<script>
-    $(".add_user_li").addClass("active")
-        .parent()
-        .parent().addClass("active open");
-</script>
+    <script>
+        $(".add_role_li").addClass("active")
+            .parent()
+            .parent().addClass("active open");
+    </script>
 @endsection

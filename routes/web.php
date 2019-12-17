@@ -20,6 +20,7 @@ Route::group(['middleware' => 'auth'], function () {
     // All my routes that needs a logged in user
     Route::get('/', 'HomeController@index')->name('home');
     Route::resource('users','UserController');
+    Route::resource('roles','RoleController');
 });
 
 /*Route::get('/', function () {

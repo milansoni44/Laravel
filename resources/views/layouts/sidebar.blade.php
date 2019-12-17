@@ -54,6 +54,24 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
+                <li class="add_role_li">
+                    <a href="{{route('roles.create')}}">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Add Role
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="role_list_li">
+                    <a href="{{route('roles.index')}}">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Roles List
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
                 <li class="add_user_li">
                     <a href="{{route('users.create')}}">
                         <i class="menu-icon fa fa-caret-right"></i>

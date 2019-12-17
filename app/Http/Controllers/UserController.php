@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\User;
@@ -18,7 +19,6 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        //
         if ($request->ajax()) {
             // for custom query use below query
             /* $data = DB::select( DB::raw("SELECT users.*,CONCAT_WS(' ',users.name,users.email) AS name FROM users
@@ -48,8 +48,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
-        return view('users.create_user');
+        $roles = Role::all();
+        return view('users.create_user', compact('roles'));
     }
 
     /**
