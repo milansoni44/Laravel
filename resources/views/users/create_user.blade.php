@@ -114,7 +114,7 @@
                                                                 <i class="ace-icon fa fa-check bigger-110"></i>
                                                                 Submit
                                                             </button>
-                                                            <a class="btn btn-danger" href="#">
+                                                            <a class="btn btn-danger" href="{{route('users.index')}}">
                                                                 <i class="ace-icon fa fa-check bigger-110"></i>
                                                                 Cancel
                                                             </a>
