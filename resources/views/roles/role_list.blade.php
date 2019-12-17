@@ -33,6 +33,7 @@
                             overview &amp; stats
                         </small>
                     </h1>
+                    <span class="pull-right"><a class="btn btn-primary btn-minier" href="{{ route('roles.export') }}">Export</a></span>
                 </div><!-- /.page-header -->
 
                 <div class="row">

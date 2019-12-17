@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use DataTables;
 use File;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -21,21 +23,14 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            // for custom query use below query
-            /* $data = DB::select( DB::raw("SELECT users.*,CONCAT_WS(' ',users.name,users.email) AS name FROM users
-        ") ); */
-            $data = DB::table('users')
-                ->select('users.*', 'roles.name as role_name')
-                ->latest()
-                ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
-                ->get();
-//            echo "<pre>"; var_dump($data);die;
+            $data = User::get_users();
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $url = url('users/' . $row->id);
                     $btn = '
-                                <a href="'.$url.'/edit" class="user_edit btn btn-primary btn-minier">Edit</a> <a href="' . $url . '" class="delete btn btn-danger btn-minier">Delete</a>
+                                <a href="' . $url . '/edit" class="user_edit btn btn-primary btn-minier">Edit</a> <a href="' . $url . '" class="delete btn btn-danger btn-minier">Delete</a>
                             ';
 
                     return $btn;
@@ -72,7 +67,7 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role' => ['required', 'integer'],
-            'profile' => ['nullable','image','mimes:jpeg,png,jpg,gif,svg','max:2048'],
+            'profile' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ]);
 
         $userArr = array(
@@ -84,15 +79,16 @@ class UserController extends Controller
         );
 
         /* upload file start */
-        if($request->hasFile('profile'))
-        {
+        if ($request->hasFile('profile')) {
             $uploadPath = public_path('uploads');
             // check directory exist or not
             File::isDirectory($uploadPath) or File::makeDirectory($uploadPath, 0777, true, true);
-            $imageName = time().'.'.$request->profile->getClientOriginalExtension();
+            $imageName = time() . '.' . $request->profile->getClientOriginalExtension();
 
             $request->profile->move($uploadPath, $imageName);
-            if($imageName != "" || !$imageName) { $userArr['profile'] = $imageName; }
+            if ($imageName != "" || !$imageName) {
+                $userArr['profile'] = $imageName;
+            }
         }
         /* upload file end */
 
@@ -127,7 +123,7 @@ class UserController extends Controller
         $roles = Role::all();
         $user_info = User::find($user->id);
 
-        return view('users.user_edit', ['user'=>$user_info,'roles'=>$roles]);
+        return view('users.user_edit', ['user' => $user_info, 'roles' => $roles]);
     }
 
     /**
@@ -141,39 +137,41 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'role' => ['required', 'integer'],
-            'profile' => ['nullable','image','mimes:jpeg,png,jpg,gif,svg','max:2048'],
+            'profile' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ]);
 
         $updateArr = array(
-            'name'=>$request->post('name'),
-            'email'=>$request->post('email'),
+            'name' => $request->post('name'),
+            'email' => $request->post('email'),
             'role_id' => $request->post('role'),
             'updated_by' => Auth::id(),
         );
-        if($request->post('password')){ $updateArr['password'] = Hash::make($request->post('password')); }
+        if ($request->post('password')) {
+            $updateArr['password'] = Hash::make($request->post('password'));
+        }
 
         /* upload file start */
-        if($request->hasFile('profile'))
-        {
+        if ($request->hasFile('profile')) {
             $uploadPath = public_path('uploads');
             // check directory exist or not
             File::isDirectory($uploadPath) or File::makeDirectory($uploadPath, 0777, true, true);
-            $imageName = time().'.'.$request->profile->getClientOriginalExtension();
+            $imageName = time() . '.' . $request->profile->getClientOriginalExtension();
 
             $request->profile->move($uploadPath, $imageName);
-            if($imageName != "" || !$imageName) { $updateArr['profile'] = $imageName; }
+            if ($imageName != "" || !$imageName) {
+                $updateArr['profile'] = $imageName;
+            }
         }
         /* upload file end */
 
         /*$userUpdate = User::where('id', $meeting->id)->update($updateArr);*/
         $userUpdate = $user->update($updateArr);
-        if($userUpdate)
-        {
+        if ($userUpdate) {
             return redirect()->route('users.index')
-                ->with('success','User updated successfully');
+                ->with('success', 'User updated successfully');
         }
         return back()->withInput()->with('errors', 'Error updating User');
     }
@@ -200,5 +198,10 @@ class UserController extends Controller
             'status' => false,
             'message' => 'Record not deleted successfully!',
         ]);
+    }
+
+    public function export()
+    {
+        return Excel::download(new UsersExport, 'users.xlsx');
     }
 }

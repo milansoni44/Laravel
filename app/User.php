@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -42,5 +43,17 @@ class User extends Authenticatable
         return $this
             ->belongsToMany('App\Role')
             ->withTimestamps();
+    }
+
+    public static function get_users()
+    {
+        // for custom query use below query
+        /* $data = DB::select( DB::raw("SELECT users.*,CONCAT_WS(' ',users.name,users.email) AS name FROM users
+    ") ); */
+        return DB::table('users')
+            ->select('users.*', 'roles.name as role_name')
+            ->latest()
+            ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
+            ->get();
     }
 }

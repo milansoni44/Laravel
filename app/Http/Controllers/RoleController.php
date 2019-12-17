@@ -6,6 +6,8 @@ use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use DataTables;
+use App\Exports\RolesExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RoleController extends Controller
 {
@@ -150,5 +152,10 @@ class RoleController extends Controller
             'status' => false,
             'message' => 'Record not deleted successfully!',
         ]);
+    }
+
+    public function export()
+    {
+        return Excel::download(new RolesExport, 'roles.xlsx');
     }
 }

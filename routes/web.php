@@ -20,7 +20,9 @@ Route::group(['middleware' => 'auth'], function () {
     // All my routes that needs a logged in user
     Route::get('/', 'HomeController@index')->name('home');
     Route::resource('users','UserController');
+    Route::get('export', 'UserController@export')->name('export');
     Route::resource('roles','RoleController');
+    Route::get('role_export', 'RoleController@export')->name('roles.export');       // ->name('roles.export') will be our link route url && role_export will be our link displayed on anchor link && actual method call will be RoleController@export
 });
 
 /*Route::get('/', function () {
