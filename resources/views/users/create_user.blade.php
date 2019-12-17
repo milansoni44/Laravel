@@ -84,15 +84,15 @@
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="role_id"> Role</label>
-                                                        <div class="col-sm-4 @if($errors->has('role_id')) has-error @endif">
-                                                            <select class="form-control" name="role_id">
+                                                        <label class="col-sm-2 control-label" for="role"> Role</label>
+                                                        <div class="col-sm-4 @if($errors->has('role')) has-error @endif">
+                                                            <select class="form-control" name="role" id="role">
                                                                 <option value="">Select Role</option>
                                                                 @foreach($roles as $role)
                                                                     <option value="{{ $role->id }}">{{ $role->name }}</option>
                                                                 @endforeach
                                                             </select>
-                                                            @error('role_id')
+                                                            @error('role')
                                                             <div class="help-block col-xs-12 col-sm-reset inline text-danger"> {{ $message }} </div>
                                                             @enderror
                                                         </div>

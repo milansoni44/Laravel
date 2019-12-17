@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use DataTables;
 use File;
 
@@ -23,7 +24,12 @@ class UserController extends Controller
             // for custom query use below query
             /* $data = DB::select( DB::raw("SELECT users.*,CONCAT_WS(' ',users.name,users.email) AS name FROM users
         ") ); */
-            $data = User::latest()->get();
+            $data = DB::table('users')
+                ->select('users.*', 'roles.name as role_name')
+                ->latest()
+                ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
+                ->get();
+//            echo "<pre>"; var_dump($data);die;
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
@@ -65,12 +71,14 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'role' => ['required', 'integer'],
             'profile' => ['nullable','image','mimes:jpeg,png,jpg,gif,svg','max:2048'],
         ]);
 
         $userArr = array(
             'name' => $request->post('name'),
             'email' => $request->post('email'),
+            'role_id' => $request->post('role'),
             'password' => Hash::make($request->post('password')),
             'created_by' => Auth::id()
         );
@@ -116,10 +124,10 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        $roles = Role::all();
         $user_info = User::find($user->id);
 
-        return view('users.user_edit', ['user'=>$user_info]);
+        return view('users.user_edit', ['user'=>$user_info,'roles'=>$roles]);
     }
 
     /**
@@ -135,12 +143,14 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'role' => ['required', 'integer'],
             'profile' => ['nullable','image','mimes:jpeg,png,jpg,gif,svg','max:2048'],
         ]);
 
         $updateArr = array(
             'name'=>$request->post('name'),
             'email'=>$request->post('email'),
+            'role_id' => $request->post('role'),
             'updated_by' => Auth::id(),
         );
         if($request->post('password')){ $updateArr['password'] = Hash::make($request->post('password')); }

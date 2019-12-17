@@ -83,8 +83,28 @@
                                                             <input type="password" name="password_confirmation" id="conf_password" class="form-control">
                                                         </div>
                                                     </div>
-
                                                     <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="role"> Role</label>
+                                                        <div class="col-sm-4 @if($errors->has('role')) has-error @endif">
+                                                            <select class="form-control" name="role" id="role">
+                                                                <option value="">Select Role</option>
+                                                                @foreach($roles as $role)
+                                                                    {{ $selectedRole = '' }}
+                                                                    @if($role->id == old('role'))
+                                                                        {{ $selectedRole = "selected='selected'" }}
+                                                                    @else
+                                                                        @if($role->id == $user->role_id)
+                                                                            {{$selectedRole = "selected='selected'"}}
+                                                                        @endif
+                                                                    @endif
+                                                                    <option value="{{ $role->id }}" {{$selectedRole}}>{{ $role->name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                            @error('role')
+                                                            <div class="help-block col-xs-12 col-sm-reset inline text-danger"> {{ $message }} </div>
+                                                            @enderror
+                                                        </div>
+
                                                         <label class="col-sm-2 control-label" for="profile"> Profile</label>
                                                         <div class="col-sm-4 @if($errors->has('profile')) has-error @endif">
                                                             <input type="file" id="profile" name="profile" class="form-control">
