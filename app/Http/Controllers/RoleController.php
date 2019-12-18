@@ -74,7 +74,7 @@ class RoleController extends Controller
             return redirect()->route('roles.index')
                 ->with('success', 'Role created successfully');
         }
-        return back()->withInput()->with('errors', 'Error creating new role');
+        return back()->withInput()->with('failure', 'Error creating new role');
     }
 
     /**
@@ -127,7 +127,7 @@ class RoleController extends Controller
             return redirect()->route('roles.index')
                 ->with('success','Role updated successfully');
         }
-        return back()->withInput()->with('errors', 'Error updating role');
+        return back()->withInput()->with('failure', 'Error updating role');
     }
 
     /**

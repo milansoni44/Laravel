@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Role;
+use Dotenv\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\User;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use DataTables;
 use File;
 use App\Exports\UsersExport;
+use App\Imports\UsersImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
@@ -98,7 +100,7 @@ class UserController extends Controller
             return redirect()->route('users.index')
                 ->with('success', 'User created successfully');
         }
-        return back()->withInput()->with('errors', 'Error creating new User');
+        return back()->withInput()->with('failure', 'Error creating new User');
     }
 
     /**
@@ -173,7 +175,7 @@ class UserController extends Controller
             return redirect()->route('users.index')
                 ->with('success', 'User updated successfully');
         }
-        return back()->withInput()->with('errors', 'Error updating User');
+        return back()->withInput()->with('failure', 'Error updating User');
     }
 
     /**
@@ -200,8 +202,92 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * @return \Illuminate\Support\Collection
+     */
     public function export()
     {
         return Excel::download(new UsersExport, 'users.xlsx');
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'import' => ['required', 'mimes:xlsx,xls', 'max:2048'],
+        ]);
+
+        $rows = Excel::toArray(new UsersImport, $request->file('import'));
+
+        $errors = [];
+        $data = [];
+        if(!empty($rows))
+        {
+            foreach($rows as $row)
+            {
+
+                if(!empty($row))
+                {
+                    $counter = count($row);
+
+                    foreach($row as $k=>$field)
+                    {
+                        if($k == 0)
+                        {
+                            continue;
+                        }
+                        $lineNo = $k+1;
+                        // get role id
+                        $role_id = Role::where('name','=',$row[$k][2])->first();
+
+                        if ($role_id === null) {
+                            // role doesn't exist
+                            $errors[] = 'Role '.$row[$k][2].' doesn\'t exist in the system at line: '.$lineNo;
+                            $email = User::where('email','=',$row[$k][1])->first();
+                            if($email)
+                            {
+                                // email already exist in the system
+                                $errors[] = 'Email '.$row[$k][1].' already exist in the system at line: '.$lineNo;
+                            }
+                            continue;
+                        }
+
+                        $email = User::where('email','=',$row[$k][1])->first();
+
+                        if($email)
+                        {
+                            // email already exist in the system
+                            $errors[] = 'Email '.$row[$k][1].' already exist in the system at line: '.$lineNo;
+                            continue;
+                        }
+
+                        $data[] = array(
+                            'name'=>$row[$k][0],
+                            'email'=>$row[$k][1],
+                            'role_id'=>$role_id->id,
+                            'password'=>Hash::make('12345678'),
+                            'created_by'=>Auth::id()
+                        );
+                    }
+                }
+            }
+        }
+        /*echo "<pre>"; print_r($data);
+        print_r($errors);
+        die;*/
+        $successDataCount = count($data);
+        if($successDataCount > 0)
+        {
+            DB::table('users')->insert($data);
+            return redirect()->route('users.index')
+            ->with('custom_flash',array("success"=>'User imported successfully. Total Data Import: '.$successDataCount,"errors"=>$errors));
+        }
+        if($successDataCount == 0){
+            return redirect()->route('users.index')
+                ->with('custom_flash',array("errors"=>$errors));
+        }
+        return back()->with('failure', 'Error importing User.');
     }
 }

@@ -10,7 +10,7 @@
                         <a href="#">Home</a>
                     </li>
                     <li class="active">
-                        <a href="#">Users</a>
+                        <a href="#">Users List</a>
                     </li>
                 </ul><!-- /.breadcrumb -->
 
@@ -25,20 +25,32 @@
             </div>
 
             <div class="page-content">
-                <div class="page-header">
-                    <h1>
-                        User List
-                        <small>
-                            <i class="ace-icon fa fa-angle-double-right"></i>
-                            overview &amp; stats
-                        </small>
-                    </h1>
-                    <span class="pull-right"><a class="btn btn-primary btn-minier" href="{{ route('export') }}">Export</a></span>
-                </div><!-- /.page-header -->
-
                 <div class="row">
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">Import Users</h4>
+                        </div>
+
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <form class="form-inline" action="{{route('users.import')}}" method="post" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="file" class="input-small form-control" name="import">
+                                    @error('import')
+                                    <div class="col-xs-12 col-sm-reset inline text-danger"> {{ $message }} </div>
+                                    @enderror
+                                    <button type="submit" class="btn btn-info btn-sm">
+                                        <i class="ace-icon fa fa-cloud-upload bigger-110"></i>Import
+                                    </button>
+                                    <a class="btn btn-warning btn-sm" href="{{ route('export') }}"><i class="ace-icon fa fa-cloud-download bigger-110"></i>Export</a>
+                                    <p style="color:red;" class="pull-right">Sample file for import user: <a href="{{asset('samples/users/sample_users.xlsx')}}" download>Download</a></p>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     @include('layouts.errors')
                     @include('layouts.success')
+                    @include('layouts.custom_flash')
                     <table class="table table-bordered data-table">
                         <thead>
                         <tr>

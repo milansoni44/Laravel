@@ -5,6 +5,7 @@
         </button>
         <strong>
             {!! session()->get('success') !!}
+            {{--{{print_r(session()->get('success')['errors'])}}--}}
         </strong>
     </div>
 @endif
