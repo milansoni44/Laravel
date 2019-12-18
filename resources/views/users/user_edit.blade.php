@@ -108,7 +108,9 @@
                                                         <label class="col-sm-2 control-label" for="profile"> Profile</label>
                                                         <div class="col-sm-4 @if($errors->has('profile')) has-error @endif">
                                                             <input type="file" id="profile" name="profile" class="form-control">
-                                                            <img src="{{asset('uploads/'.$user->profile)}}" width="100px"/>
+                                                            @if(isset($user->profile) && $user->profile)
+                                                                <img src="{{asset('uploads/'.$user->profile)}}" width="100px"/>
+                                                            @endif
                                                             @error('profile')
                                                             <div class="help-block col-xs-12 col-sm-reset inline text-danger"> {{ $message }} </div>
                                                             @enderror

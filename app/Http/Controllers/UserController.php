@@ -227,7 +227,6 @@ class UserController extends Controller
         {
             foreach($rows as $row)
             {
-
                 if(!empty($row))
                 {
                     $counter = count($row);
@@ -240,35 +239,38 @@ class UserController extends Controller
                         }
                         $lineNo = $k+1;
                         // get role id
-                        $role_id = Role::where('name','=',$row[$k][2])->first();
+                        $role = trim($row[$k][2]);
+                        $email_field = trim($row[$k][1]);
+                        $role_id = Role::where('name','=',$role)->first();
+                        $email = User::where('email','=',$email_field)->first();
 
                         if ($role_id === null) {
                             // role doesn't exist
-                            $errors[] = 'Role '.$row[$k][2].' doesn\'t exist in the system at line: '.$lineNo;
-                            $email = User::where('email','=',$row[$k][1])->first();
+                            $errors[] = 'Role '.$role.' doesn\'t exist in the system at line: '.$lineNo;
+
                             if($email)
                             {
                                 // email already exist in the system
-                                $errors[] = 'Email '.$row[$k][1].' already exist in the system at line: '.$lineNo;
+                                $errors[] = 'Email '.$email_field.' already exist in the system at line: '.$lineNo;
                             }
                             continue;
                         }
 
-                        $email = User::where('email','=',$row[$k][1])->first();
-
                         if($email)
                         {
                             // email already exist in the system
-                            $errors[] = 'Email '.$row[$k][1].' already exist in the system at line: '.$lineNo;
+                            $errors[] = 'Email '.$email_field.' already exist in the system at line: '.$lineNo;
                             continue;
                         }
 
                         $data[] = array(
-                            'name'=>$row[$k][0],
-                            'email'=>$row[$k][1],
+                            'name'=>trim($row[$k][0]),
+                            'email'=>$email_field,
                             'role_id'=>$role_id->id,
                             'password'=>Hash::make('12345678'),
-                            'created_by'=>Auth::id()
+                            'created_by'=>Auth::id(),
+                            'created_at'=>date('Y-m-d H:i:s'),
+                            'updated_at'=>date('Y-m-d H:i:s'),
                         );
                     }
                 }

@@ -25,20 +25,32 @@
             </div>
 
             <div class="page-content">
-                <div class="page-header">
-                    <h1>
-                        Roles List
-                        <small>
-                            <i class="ace-icon fa fa-angle-double-right"></i>
-                            overview &amp; stats
-                        </small>
-                    </h1>
-                    <span class="pull-right"><a class="btn btn-primary btn-minier" href="{{ route('roles.export') }}">Export</a></span>
-                </div><!-- /.page-header -->
-
                 <div class="row">
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">Import Role</h4>
+                        </div>
+
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <form class="form-inline" action="{{route('roles.import')}}" method="post" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="file" class="input-small form-control" name="import">
+                                    @error('import')
+                                    <div class="col-xs-12 col-sm-reset inline text-danger"> {{ $message }} </div>
+                                    @enderror
+                                    <button type="submit" class="btn btn-info btn-sm">
+                                        <i class="ace-icon fa fa-cloud-upload bigger-110"></i>Import
+                                    </button>
+                                    <a class="btn btn-warning btn-sm" href="{{ route('roles.export') }}"><i class="ace-icon fa fa-cloud-download bigger-110"></i>Export</a>
+                                    <p style="color:red;" class="pull-right">Sample file for import role: <a href="{{asset('samples/users/sample_roles.xlsx')}}" download>Download</a></p>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     @include('layouts.errors')
                     @include('layouts.success')
+                    @include('layouts.custom_flash')
                     <table class="table table-bordered data-table">
                         <thead>
                         <tr>

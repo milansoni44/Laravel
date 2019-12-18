@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use DataTables;
 use App\Exports\RolesExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\RolesImport;
 
 class RoleController extends Controller
 {
@@ -157,5 +158,73 @@ class RoleController extends Controller
     public function export()
     {
         return Excel::download(new RolesExport, 'roles.xlsx');
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'import' => ['required', 'mimes:xlsx,xls', 'max:2048'],
+        ]);
+
+        $rows = Excel::toArray(new RolesImport, $request->file('import'));
+
+        $errors = [];
+        $data = [];
+        if(!empty($rows))
+        {
+            foreach($rows as $row)
+            {
+                if(!empty($row))
+                {
+                    $counter = count($row);
+
+                    foreach($row as $k=>$field)
+                    {
+                        if($k == 0)
+                        {
+                            continue;
+                        }
+                        $lineNo = $k+1;
+                        // get role id
+                        $role_name = trim($row[$k][0]);
+
+                        $role = Role::where('name','=',$role_name)->first();
+
+                        if($role)
+                        {
+                            // email already exist in the system
+                            $errors[] = 'Role name '.$role_name.' already exist in the system at line: '.$lineNo;
+                            continue;
+                        }
+
+                        $data[] = array(
+                            'name'=>trim($row[$k][0]),
+                            'description'=>trim($row[$k][1]),
+                            'created_by'=>Auth::id(),
+                            'created_at'=>date('Y-m-d H:i:s'),
+                            'updated_at'=>date('Y-m-d H:i:s'),
+                        );
+                    }
+                }
+            }
+        }
+        /*echo "<pre>"; print_r($data);
+        print_r($errors);
+        die;*/
+        $successDataCount = count($data);
+        if($successDataCount > 0)
+        {
+            DB::table('roles')->insert($data);
+            return redirect()->route('roles.index')
+                ->with('custom_flash',array("success"=>'Role imported successfully. Total Data Import: '.$successDataCount,"errors"=>$errors));
+        }
+        if($successDataCount == 0){
+            return redirect()->route('roles.index')
+                ->with('custom_flash',array("errors"=>$errors));
+        }
+        return back()->with('failure', 'Error importing Role.');
     }
 }
