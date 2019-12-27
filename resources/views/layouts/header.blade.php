@@ -14,7 +14,7 @@
             <a href="{{route('home')}}" class="navbar-brand">
                 <small>
                     <i class="fa fa-leaf"></i>
-                    Ace Admin
+                    {{$settings->system_name}}
                 </small>
             </a>
         </div>

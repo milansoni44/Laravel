@@ -45,7 +45,7 @@
 
         <li class="">
             <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-list"></i>
+                <i class="menu-icon fa fa-group"></i>
                 <span class="menu-text"> Roles Management </span>
 
                 <b class="arrow fa fa-angle-down"></b>
@@ -76,7 +76,7 @@
 
         <li class="">
             <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-list"></i>
+                <i class="menu-icon fa fa-user"></i>
                 <span class="menu-text"> Users Management </span>
 
                 <b class="arrow fa fa-angle-down"></b>
@@ -103,6 +103,14 @@
                     <b class="arrow"></b>
                 </li>
             </ul>
+        </li>
+        <li class="setting_li">
+            <a href="{{route('settings')}}">
+                <i class="menu-icon fa fa-cogs"></i>
+                <span class="menu-text"> System Setting </span>
+            </a>
+
+            <b class="arrow"></b>
         </li>
     </ul><!-- /.nav-list -->
 

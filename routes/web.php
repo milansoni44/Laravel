@@ -25,6 +25,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('roles','RoleController');
     Route::get('role_export', 'RoleController@export')->name('roles.export');       // ->name('roles.export') will be our link route url && role_export will be our link displayed on anchor link && actual method call will be RoleController@export
     Route::post('role_import', 'RoleController@import')->name('roles.import');
+
+    Route::get('settings', 'SettingController@index')->name('settings');
+    Route::post('settings/save', 'SettingController@save')->name('settings.save');
 });
 
 /*Route::get('/', function () {

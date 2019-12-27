@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use DataTables;
+use Yajra\DataTables\DataTables;
 use App\Exports\RolesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\RolesImport;
@@ -14,8 +14,9 @@ class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Exception
      */
     public function index(Request $request)
     {
@@ -24,7 +25,7 @@ class RoleController extends Controller
             /* $data = DB::select( DB::raw("SELECT users.*,CONCAT_WS(' ',users.name,users.email) AS name FROM users
         ") ); */
             $data = Role::latest()->get();
-            return Datatables::of($data)
+                return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $url = url('roles/' . $row->id);
