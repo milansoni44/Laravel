@@ -9,8 +9,10 @@
 - Step3:
 app\Providers\AppServiceProvider.php
 Comment below lines
+```php
 //$settings = Setting::all()[0];
 //view()->share('settings', $settings);
+```
 
 - Step4: composer install
 
@@ -30,8 +32,10 @@ Comment below lines
 - Step13: 
 app\Providers\AppServiceProvider.php
 UnComment below lines
+```php
 $settings = Setting::all()[0];
 view()->share('settings', $settings);
+```
 
 - Step14: 
 php artisan serve
