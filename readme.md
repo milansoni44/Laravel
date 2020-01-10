@@ -40,8 +40,8 @@ UnComment below lines
 public function boot()
 {
     Builder::defaultStringLength(191); // Update defaultStringLength
-    $settings = Setting::all()[0];
-    view()->share('settings', $settings);
+    ! $settings = Setting::all()[0];
+    ! view()->share('settings', $settings);
 }
 ```
 
