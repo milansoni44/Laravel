@@ -10,8 +10,12 @@
 app\Providers\AppServiceProvider.php
 Comment below lines
 ```php
-//$settings = Setting::all()[0];
-//view()->share('settings', $settings);
+public function boot()
+{
+    Builder::defaultStringLength(191); // Update defaultStringLength
+    /*$settings = Setting::all()[0];
+    view()->share('settings', $settings);*/
+}
 ```
 
 - Step4: `composer install`
@@ -33,8 +37,12 @@ Comment below lines
 app\Providers\AppServiceProvider.php
 UnComment below lines
 ```php
-$settings = Setting::all()[0];
-view()->share('settings', $settings);
+public function boot()
+{
+    Builder::defaultStringLength(191); // Update defaultStringLength
+    $settings = Setting::all()[0];
+    view()->share('settings', $settings);
+}
 ```
 
 - Step14: 
