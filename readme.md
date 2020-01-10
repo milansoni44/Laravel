@@ -41,7 +41,7 @@ view()->share('settings', $settings);
 php artisan serve
 
 - Step15:
-Login with
+Login with  
 Username: admin@gmail.com  
 Password: admin 
 
