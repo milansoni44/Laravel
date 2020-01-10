@@ -1,4 +1,4 @@
-Steps to install
+## Steps to install
 
 open CMD
 Step1: git clone https://github.com/milansoni44/Laravel.git
