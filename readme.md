@@ -54,5 +54,5 @@ Login with
 Username: admin@gmail.com  
 Password: admin 
 ```
-
+Checkout the link for the document: https://milansoni44.github.io/Laravel/
 <p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
